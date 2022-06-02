@@ -44,7 +44,7 @@ async function main() {
 
     let contractName = contract["contractName"];
 
-    for (let i=0; i< contract["abi"].length; i++) {
+    for (let i=0; i < contract["abi"].length; i++) {
         let type = contract["abi"][i].type;
         let functionName = contract["abi"][i].name;
         let mutability = contract["abi"][i].stateMutability;
@@ -62,6 +62,19 @@ async function main() {
     }
 
     console.log(myContract);
+
+    for (let i=0; i < myContract.length; i++) {
+        let arg = myContract[0].name + "("
+        let count = myContract[i].params.length;
+        for (let j=0; j < count - 1; j++) {
+            arg = arg + myContract[i].params[j] + ",";
+        }
+        arg = arg + myContract[i].params[count - 1] + ")";
+
+        console.log(`Registering  ${arg}...`);
+        const tx = await helloWorldContract.registerFunctionToAdmin(arg);
+        await tx.wait();
+    }
 
     /* Writing a new "introspective contract"
 

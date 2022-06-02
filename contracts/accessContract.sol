@@ -54,4 +54,8 @@ contract AccessContract is AccessControl {
         _setRoleAdmin(keccak256(abi.encodePacked(roleSig)), DEFAULT_ADMIN_ROLE);
     }
 
+    // Helper function 
+    function bytesToHash(bytes4 roleSig) public pure returns(bytes32 result) {
+        result = keccak256(abi.encodePacked(roleSig));
+    }
 }

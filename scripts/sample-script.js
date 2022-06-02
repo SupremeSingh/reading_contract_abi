@@ -21,7 +21,7 @@ async function main() {
 
   console.log("Greeter deployed to:", greeter.address);
 
-  let tx1 = await greeter.setGreeting("Hello, Hardhat!");
+  let tx1 = await greeter.setGreetingAsAdmin("Hello, Hardhat!", 4);
 
   console.log(`THe new greeting is ... ${await greeter.greeting()}`);
 }

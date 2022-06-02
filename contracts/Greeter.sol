@@ -9,8 +9,6 @@ contract Greeter is AccessContract {
     string public greeting;
 
     constructor() AccessContract(msg.sender) {
-        super.registerFunctionToAdmin("setGreetingAsUser(string)");
-        super.registerFunctionToAdmin("setGreetingAsAdmin(string,uint256)");
     }
 
     function greet() public view returns (string memory) {

@@ -2,7 +2,7 @@
 
 const API_KEY = process.env.API_KEY;
 const PRIVATE_KEY = process.env.PRIVATE_KEY;
-const CONTRACT_ADDRESS = process.env.CONTRACT_ADDRESS;
+const CONTRACT_ADDRESS = process.env.GREETER_ADDRESS;
 
 const contract = require("../artifacts/contracts/Greeter.sol/Greeter.json");
 var fs = require('fs'); 
@@ -39,14 +39,16 @@ async function main() {
     var myContract = [];
 
     // Stripping down ABI for mutable functions
+    let mutabilityToIgnore = ["pure", "view", "private"];
+    let functioNameToIgnore = ["grantRole", "registerFunctionToAdmin", "registerFunctionWithHeirarchy", "renounceRole", "revokeRole"];
 
     let contractName = contract["contractName"];
 
     for (let i=0; i< contract["abi"].length; i++) {
         let type = contract["abi"][i].type;
+        let functionName = contract["abi"][i].name;
         let mutability = contract["abi"][i].stateMutability;
-        if ((type === "function") && (mutability !== "pure" && mutability !== "view" && mutability !== "private")) {
-            let functionName = contract["abi"][i].name;
+        if ((type === "function") && !(mutabilityToIgnore.includes(mutability)) && !(functioNameToIgnore.includes(functionName))) {
             let args = [];
             let numParams = contract["abi"][i].inputs.length;
             if (numParams > 0) {
@@ -59,7 +61,10 @@ async function main() {
         }
     }
 
-    // Writing a new "introspective contract"
+    console.log(myContract);
+
+    /* Writing a new "introspective contract"
+
     var newName = contractName + "Introspect";
     var filepath = "C:/Users/User/Desktop/reading_contract_abi/contracts/" + newName + ".sol"; 
 
@@ -83,6 +88,8 @@ async function main() {
         if (err) throw err; 
         console.log("The file was succesfully saved!"); 
     });  
+
+    */
 }
 
 main();

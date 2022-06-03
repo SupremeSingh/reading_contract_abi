@@ -38,7 +38,7 @@ async function main() {
     
     var myContract = [];
 
-    // Stripping down ABI for mutable functions
+    // Ignore from Access Contract Inheritable
     let mutabilityToIgnore = ["pure", "view", "private"];
     let functioNameToIgnore = ["grantRole", "registerFunctionToAdmin", "registerFunctionWithHeirarchy", "renounceRole", "revokeRole"];
 
@@ -56,13 +56,14 @@ async function main() {
                     args.push(contract["abi"][i].inputs[j].type);
                 }
             }
-            // Add name and params to a struct for this contract 
             myContract.push(new contractMetaData(functionName, mutability, args));
         }
     }
 
+    // Strip down ABI to mutators and orient in a struct
     console.log(myContract);
 
+    // Format list of structs and register
     for (let i=0; i < myContract.length; i++) {
         let arg = myContract[0].name + "("
         let count = myContract[i].params.length;
@@ -75,6 +76,9 @@ async function main() {
         const tx = await helloWorldContract.registerFunctionToAdmin(arg);
         await tx.wait();
     }
+
+    const bytes4 = await helloWorldContract.greeting();
+    console.log("The new message is: " + newMessage);
 
     /* Writing a new "introspective contract"
 

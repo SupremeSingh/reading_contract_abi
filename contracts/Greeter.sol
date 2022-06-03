@@ -2,7 +2,7 @@
 pragma solidity ^0.8.0;
 
 import "hardhat/console.sol";
-import "./accessContract.sol";
+import "./AccessContract.sol";
 
 contract Greeter is AccessContract {
 

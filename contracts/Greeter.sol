@@ -10,11 +10,7 @@ contract Greeter is AccessContract {
 
     constructor() AccessContract(msg.sender) {
     }
-
-    function greet() public view returns (string memory) {
-        return greeting;
-    }
-
+    
     function setGreetingAsUser(string memory _greeting) public ichiGuard() returns(bool value) {
         greeting = _greeting;
         value = true;

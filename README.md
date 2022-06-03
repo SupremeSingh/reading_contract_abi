@@ -1,15 +1,14 @@
 # Basic Sample Hardhat Project
 
-This project demonstrates a basic Hardhat use case. It comes with a sample contract, a test for that contract, a sample script that deploys that contract, and an example of a task implementation, which simply lists the available accounts.
+Intended to be a demo for simple introspective access control. Inherits Openzeppelin's AccessControl and builds on it. To use - 
 
-Try running some of the following tasks:
-
-```shell
-npx hardhat accounts
-npx hardhat compile
-npx hardhat clean
-npx hardhat test
-npx hardhat node
-node scripts/sample-script.js
-npx hardhat help
 ```
+npm install 
+npx hardhat compile 
+npx hardhat --network rinkeby run scripts/deploy.js
+npx hardhat --network rinkeby run scripts/interact.js
+```
+
+Note - interact.js registers new roles under the SUPER_ADMIN role. However, the deploying address still does not have access to them. You have to add access using "grantRole" functionality separately. All RoleIDs are present in the events logs, and also provided by our script. 
+
+Status - To Be Continued 

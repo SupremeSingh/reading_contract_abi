@@ -32,6 +32,10 @@ contract AccessContract is AccessControl {
         _setupRole(DEFAULT_ADMIN_ROLE, root);
     }
 
+    function registerFunctionToAdmin(string memory _nameAndParameters, string memory _description) public {
+        registerFunctionWithHeirarchy(_nameAndParameters, _description, DEFAULT_ADMIN_ROLE);
+    }
+
     function registerFunctionWithHeirarchy(string memory _nameAndParameters, string memory _description, bytes32 _adminRoleId) public onlyMember(_adminRoleId) {
         bytes4 roleSig = bytes4(keccak256(bytes(_nameAndParameters)));
         functionSigs.push(roleSig);
@@ -43,10 +47,6 @@ contract AccessContract is AccessControl {
         emit newRoleCreated(newRoleId, _nameAndParameters, _adminRoleId);
 
         _setRoleAdmin(newRoleId, _adminRoleId);
-    }
-
-    function registerFunctionToAdmin(string memory _nameAndParameters, string memory _description) public {
-        registerFunctionWithHeirarchy(_nameAndParameters, _description, DEFAULT_ADMIN_ROLE);
     }
     
 }

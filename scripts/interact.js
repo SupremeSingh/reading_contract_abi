@@ -25,6 +25,7 @@ async function main() {
     address: GREETER_ADDRESS,
     topics: [ethers.utils.id("newRoleCreated(bytes32,string,bytes32)")],
   };
+  
 
   function contractMetaData(name, mutability, params) {
     this.name = name;
@@ -69,53 +70,12 @@ async function main() {
       await tx.wait();
     }
   }
-  
+
   alchemyProvider.on(filter, (e) => {
     let hash = e.data.substring(0,66);
     console.log("RoleID - " + hash);
-});
-
-  /* Grant the roles to the super admin here itself -- necessary
-
-  alchemyProvider.on(filter, (e) => {
-      let hash = e.data.substring(0,66);
-      console.log(`Assigning role to admin  ...`);
-      const tx = await greeterInstance.grantRole(
-        hash,
-        PUBLIC_KEY
-      );
-      await tx.wait();
   });
 
-  /*
-
-  /* Writing a new "introspective contract" --optional
-
-    var newName = contractName + "Introspect";
-    var filepath = "C:/Users/User/Desktop/reading_contract_abi/contracts/" + newName + ".sol"; 
-
-    var fileContent = 
-    `
-    //SPDX-License-Identifier: Unlicense
-    pragma solidity ^0.8.0;
-
-    import "hardhat/console.sol";
-
-    contract ${newName} {
-    string public greeting;
-
-    constructor(string memory _greeting) {
-        console.log("Deploying a Greeter with greeting:", _greeting);
-        greeting = _greeting;
-    }
-    `; 
-
-    fs.writeFile(filepath, fileContent, (err) => { 
-        if (err) throw err; 
-        console.log("The file was succesfully saved!"); 
-    });  
-
-    */
 }
 
 main();

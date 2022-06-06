@@ -21,18 +21,14 @@ const greeterInstance = new ethers.Contract(
 
 let globalNonceCounter = 0;
 
-function sleep(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
-}
-
 async function grantDefaultRole(roleID) {
   
   console.log("Adding roleID - " + roleID);
   
-  const tx = await greeterInstance.grantRole(roleID, PUBLIC_KEY, { gasLimit: 8000000, nonce: globalNonceCounter});
-  await tx.wait();
+  // const tx = await greeterInstance.grantRole(roleID, PUBLIC_KEY, { gasLimit: 8000000, nonce: globalNonceCounter});
+  // await tx.wait();
 
-  globalCounter += 1;
+  // globalCounter += 1;
   console.log("Role has been added");
 }
 

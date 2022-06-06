@@ -52,8 +52,7 @@ async function main() {
   let mutabilityToIgnore = ["pure", "view", "private"];
   let functioNameToIgnore = [
     "grantRole",
-    "registerFunctionToAdmin",
-    "registerFunctionWithHeirarchy",
+    "registerFunction",
     "renounceRole",
     "revokeRole",
   ];
@@ -77,7 +76,7 @@ async function main() {
       arg = arg + contract["abi"][i].inputs[numParams - 1].type + ")";
 
       console.log(`Registering  ${arg}...`);
-      const tx = await greeterInstance.registerFunctionToAdmin(
+      const tx = await greeterInstance.registerFunction(
         arg,
         "This is a test"
       );

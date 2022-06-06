@@ -2,13 +2,13 @@
 pragma solidity ^0.8.0;
 
 import "hardhat/console.sol";
-import "./AccessContract.sol";
+import "./ICHIGuard.sol";
 
-contract Greeter is AccessContract {
+contract Greeter is ICHIGuard {
 
     string public greeting;
 
-    constructor() AccessContract(msg.sender) {
+    constructor() ICHIGuard(msg.sender) {
     }
     
     function setGreetingAsUser(string memory _greeting) public ichiGuard() returns(bool value) {

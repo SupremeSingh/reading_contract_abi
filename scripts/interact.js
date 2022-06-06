@@ -19,18 +19,27 @@ const greeterInstance = new ethers.Contract(
   signer
 );
 
+let globalNonceCounter = 0;
+
 function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
 async function grantDefaultRole(roleID) {
+  
   console.log("Adding roleID - " + roleID);
-  const tx = await greeterInstance.grantRole(roleID, PUBLIC_KEY, { gasLimit: 8000000 });
+  
+  const tx = await greeterInstance.grantRole(roleID, PUBLIC_KEY, { gasLimit: 8000000, nonce: globalNonceCounter});
   await tx.wait();
-  sleep(10000);
+
+  globalCounter += 1;
+  console.log("Role has been added");
 }
 
 async function main() {
+
+  globalNonceCounter = await alchemyProvider.getTransactionCount(PUBLIC_KEY);
+  console.log("Nonce: " + globalNonceCounter);
 
   filter = {
     address: GREETER_ADDRESS,

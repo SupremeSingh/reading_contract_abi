@@ -19,6 +19,15 @@ const greeterInstance = new ethers.Contract(
   signer
 );
 
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+async function grantDefaultRole(roleID) {
+  const tx = await greeterInstance.grantRole(roleID, PUBLIC_KEY);
+  console.log("RoleID added- " + roleID);
+}
+
 async function main() {
 
   filter = {
@@ -41,8 +50,6 @@ async function main() {
     "renounceRole",
     "revokeRole",
   ];
-
-  let contractName = contract["contractName"];
 
   for (let i = 0; i < contract["abi"].length; i++) {
     let type = contract["abi"][i].type;
@@ -71,10 +78,7 @@ async function main() {
     }
   }
 
-  alchemyProvider.on(filter, (e) => {
-    let hash = e.data.substring(0,66);
-    console.log("RoleID - " + hash);
-  });
+  alchemyProvider.on(filter, (e) => grantDefaultRole(e.data.substring(0,66)));
 
 }
 

@@ -24,9 +24,10 @@ function sleep(ms) {
 }
 
 async function grantDefaultRole(roleID) {
-  const tx = await greeterInstance.grantRole(roleID, PUBLIC_KEY, { gasLimit: 40000 });
+  console.log("Adding roleID - " + roleID);
+  const tx = await greeterInstance.grantRole(roleID, PUBLIC_KEY, { gasLimit: 8000000 });
   await tx.wait();
-  console.log("RoleID added- " + roleID);
+  sleep(10000);
 }
 
 async function main() {

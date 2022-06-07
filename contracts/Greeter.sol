@@ -1,16 +1,16 @@
-//SPDX-License-Identifier: Unlicense
+//SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
 import "hardhat/console.sol";
-import "./ICHIGuard.sol";
+import "./GreeterIntrospect.sol";
 
-contract Greeter is ICHIGuard {
+contract Greeter is GreeterIntrospect {
 
     string public greeting;
 
-    constructor() ICHIGuard(msg.sender) {
+    constructor() GreeterIntrospect() {
     }
-    
+
     function setGreetingAsUser(string memory _greeting) public ichiGuard() returns(bool value) {
         greeting = _greeting;
         value = true;

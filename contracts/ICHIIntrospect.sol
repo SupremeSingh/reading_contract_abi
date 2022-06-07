@@ -5,7 +5,7 @@ import "hardhat/console.sol";
 import "@openzeppelin/contracts/access/AccessControl.sol";
 import "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
 
-contract ICHIGuard is AccessControl {
+contract ICHIIntrospect is AccessControl {
     
     bytes4[] public functionSigs;
 
@@ -29,7 +29,7 @@ contract ICHIGuard is AccessControl {
         _setupRole(DEFAULT_ADMIN_ROLE, root);
     }
 
-    function registerFunction(string memory _nameAndParameters, string memory _description) public onlyRole(DEFAULT_ADMIN_ROLE) {
+    function registerFunction(string memory _nameAndParameters, string memory _description) internal onlyRole(DEFAULT_ADMIN_ROLE) {
         
         bytes4 roleSig = bytes4(keccak256(bytes(_nameAndParameters)));     
         require(!bytesToFunctions[roleSig].hasBeenSet, "This function has already been registered");
@@ -37,6 +37,7 @@ contract ICHIGuard is AccessControl {
         functionSigs.push(roleSig);
         bytesToFunctions[roleSig] = FunctionInfo(_description, _nameAndParameters, true);
         bytes32 newRoleId = keccak256(abi.encodePacked(roleSig));
+
         emit NewRoleCreated(newRoleId, _nameAndParameters);
     }
     

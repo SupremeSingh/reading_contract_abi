@@ -1,10 +1,10 @@
-const API_KEY = process.env.API_KEY;
-const PRIVATE_KEY = process.env.PRIVATE_KEY;
-
 const contract = require("../artifacts/contracts/Greeter.sol/Greeter.json");
+var diff = require('deep-diff').diff;
 var fs = require("fs");
 
 async function main() {
+
+  var differences = diff(parentContract1, contract);
 
   let registerBlock = "";
   let mutabilityToIgnore = ["pure", "view", "private"];

@@ -25,4 +25,7 @@ Finally, your contract is ready to be deployed ...
 npx hardhat --network rinkeby run scripts/deploy.js
 ```
 
+Note - Ideally, you would start from the highest-level contracts and move down to child contracts - so you are able to guard each role befire it is deployed
+NOTE - If your contract inherits from another, whose functions have already been registered - THEY WILL NOT BE REGISTERED AGAIN 
+
 Status - To Be Continued 

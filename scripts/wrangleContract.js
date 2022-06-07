@@ -4,14 +4,6 @@ const PRIVATE_KEY = process.env.PRIVATE_KEY;
 const contract = require("../artifacts/contracts/Greeter.sol/Greeter.json");
 var fs = require("fs");
 
-const alchemyProvider = new ethers.providers.AlchemyProvider(
-  (network = "rinkeby"),
-  API_KEY
-);
-
-const signer = new ethers.Wallet(PRIVATE_KEY, alchemyProvider);
-
-
 async function main() {
 
   let registerBlock = "";

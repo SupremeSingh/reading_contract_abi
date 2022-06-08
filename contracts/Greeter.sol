@@ -4,11 +4,11 @@ pragma solidity ^0.8.0;
 import "hardhat/console.sol";
 import "./GreeterIntrospect.sol";
 
-contract Greeter is GreeterIntrospect {
+contract Greeter is GreeterIntrospect{
 
     string public greeting;
 
-    constructor() GreeterIntrospect() {
+    constructor() {
     }
 
     function setGreetingAsUser(string memory _greeting) public ichiGuard() returns(bool value) {

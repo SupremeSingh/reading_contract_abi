@@ -1,20 +1,25 @@
 const contract = require("../artifacts/contracts/Greeter.sol/Greeter.json");
-var diff = require('deep-diff').diff;
+const parentContract1 = require("../artifacts/contracts/ICHIIntrospect.sol/ICHIIntrospect.json");
 var fs = require("fs");
 
+let parentContractABISet = [parentContract1.abi];
+let overRiddenFunctions = [];
+
+let registerBlock = "";
+let mutabilityToIgnore = ["pure", "view", "private"];
+
+function functionNameExists(parentContractABISet, functionName) {
+  for (let i = 0; i < parentContractABISet.length; i++) {
+    for (let j = 0; j < parentContractABISet[i].length; j++) {
+      if (parentContractABISet[i][j].name === functionName && !overRiddenFunctions.includes(functionName)) {
+        return true;
+      }
+    }
+  }
+  return false;
+}
+
 async function main() {
-
-  var differences = diff(parentContract1, contract);
-
-  let registerBlock = "";
-  let mutabilityToIgnore = ["pure", "view", "private"];
-  let functioNameToIgnore = [
-    "grantRole",
-    "registerFunction",
-    "renounceRole",
-    "revokeRole",
-  ];
-
   let contractName = contract["contractName"];
   for (let i = 0; i < contract["abi"].length; i++) {
     let type = contract["abi"][i].type;
@@ -23,8 +28,16 @@ async function main() {
     if (
       type === "function" &&
       !mutabilityToIgnore.includes(mutability) &&
-      !functioNameToIgnore.includes(functionName)
+      !functionNameExists(parentContractABISet, functionName)
     ) {
+      if (functionNameExists(parentContractABISet, functionName)) {
+        console.log(
+          "Function name " +
+            functionName +
+            " already exists in parent contract, skipping"
+        );
+      }
+
       let arg = functionName + "(";
       let numParams = contract["abi"][i].inputs.length;
       if (numParams > 0) {
@@ -33,7 +46,8 @@ async function main() {
         }
       }
       arg = arg + contract["abi"][i].inputs[numParams - 1].type + ")";
-      registerBlock += "registerFunction('" + arg + "', 'This is a test');" + "\n";
+      registerBlock +=
+        "registerFunction('" + arg + "', 'This is a test');" + "\n";
     }
   }
 

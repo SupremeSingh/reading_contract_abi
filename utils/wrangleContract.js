@@ -1,9 +1,10 @@
-const contract = require("../artifacts/contracts/Greeter.sol/Greeter.json");
+const contract = require("../artifacts/contracts/GreeterChild.sol/GreeterChild.json");
 const parentContract1 = require("../artifacts/contracts/ICHIIntrospect.sol/ICHIIntrospect.json");
+const parentContract2 = require("../artifacts/contracts/Greeter.sol/Greeter.json");
 var fs = require("fs");
 
-let parentContractABISet = [parentContract1.abi];
-let overRiddenFunctions = [];
+let parentContractABISet = [parentContract1.abi, parentContract2.abi];
+let parentContractFunctions = [];
 
 let registerBlock = "";
 let mutabilityToIgnore = ["pure", "view", "private"];
@@ -11,12 +12,11 @@ let mutabilityToIgnore = ["pure", "view", "private"];
 function functionNameExists(parentContractABISet, functionName) {
   for (let i = 0; i < parentContractABISet.length; i++) {
     for (let j = 0; j < parentContractABISet[i].length; j++) {
-      if (parentContractABISet[i][j].name === functionName && !overRiddenFunctions.includes(functionName)) {
-        return true;
+      if (parentContractABISet[i][j].name === functionName) {
+        parentContractFunctions.push(parentContractABISet[i][j]);
       }
     }
   }
-  return false;
 }
 
 async function main() {
@@ -27,17 +27,9 @@ async function main() {
     let mutability = contract["abi"][i].stateMutability;
     if (
       type === "function" &&
-      !mutabilityToIgnore.includes(mutability) &&
-      !functionNameExists(parentContractABISet, functionName)
+      !mutabilityToIgnore.includes(mutability)
     ) {
-      if (functionNameExists(parentContractABISet, functionName)) {
-        console.log(
-          "Function name " +
-            functionName +
-            " already exists in parent contract, skipping"
-        );
-      }
-
+      functionNameExists(parentContractABISet, functionName);
       let arg = functionName + "(";
       let numParams = contract["abi"][i].inputs.length;
       if (numParams > 0) {
@@ -71,6 +63,9 @@ async function main() {
         }
     }
     `;
+
+  console.log("The following functions wre registered, but have not been guarded ...");
+  console.log(parentContractFunctions);
 
   fs.writeFile(filepath, fileContent, (err) => {
     if (err) throw err;

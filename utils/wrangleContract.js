@@ -1,18 +1,21 @@
+// -------------------------------------------------- DEPLOYER MODIFY OVER HERE ---------------------------------------
 const contract = require("../artifacts/contracts/GreeterChild.sol/GreeterChild.json");
 const parentContract1 = require("../artifacts/contracts/ICHIIntrospect.sol/ICHIIntrospect.json");
 const parentContract2 = require("../artifacts/contracts/Greeter.sol/Greeter.json");
-var fs = require("fs");
 
 let parentABISet = [parentContract1, parentContract2];
-let parentContractFunctions = [];
+let functionsToIgnore = ["setGreetingAsUser"];
+// --------------------------------------------------------------------------------------------------------------------
 
+var fs = require("fs");
 let registerBlock = "";
+let parentContractFunctions = [];
 let mutabilityToIgnore = ["pure", "view", "private"];
 
 function functionNameExists(functionName) {
   for (let i = 0; i < parentABISet.length; i++) {
     for (let j = 0; j < parentABISet[i]["abi"].length; j++) {
-      if (parentABISet[i]["abi"][j].name === functionName) {
+      if (parentABISet[i]["abi"][j].name === functionName && !functionsToIgnore.includes(parentABISet[i]["abi"][j].name)) {
         parentContractFunctions.push("From " + parentABISet[i]["contractName"] + ".sol ... ");
         parentContractFunctions.push(parentABISet[i]["abi"][j]);
       }
@@ -28,7 +31,8 @@ async function main() {
     let mutability = contract["abi"][i].stateMutability;
     if (
       type === "function" &&
-      !mutabilityToIgnore.includes(mutability)
+      !mutabilityToIgnore.includes(mutability) && 
+      !functionsToIgnore.includes(functionName)
     ) {
       functionNameExists(functionName);
       let arg = functionName + "(";

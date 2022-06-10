@@ -4,7 +4,7 @@ const parentContract1 = require("../artifacts/contracts/Greeter.sol/Greeter.json
 const parentContract2 = require("../artifacts/@openzeppelin/contracts/token/ERC721/ERC721.sol/ERC721.json");
 
 let parentABISet = [parentContract1, parentContract2];
-let functionsToIgnore = ["grantRole", "revokeRole", "renounceRole", "approve", "transferFrom", "safeTransferFrom", "setApprovalForAll"];
+let functionsToIgnore = ["grantRole", "revokeRole", "renounceRole"];
 // --------------------------------------------------------------------------------------------------------------------
 
 var fs = require("fs");

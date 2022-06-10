@@ -2,13 +2,6 @@ const hre = require("hardhat");
 
 async function main() {
 
-  const AccessContract = await hre.ethers.getContractFactory("AccessContract");
-  const accessContract = await AccessContract.deploy(process.env.PUBLIC_KEY);
-
-  await accessContract.deployed();
-
-  console.log("accessControl deployed to:", accessContract.address);
-
   const Greeter = await hre.ethers.getContractFactory("Greeter");
   const greeter = await Greeter.deploy();
 
@@ -18,8 +11,6 @@ async function main() {
 
 }
 
-// We recommend this pattern to be able to use async/await everywhere
-// and properly handle errors.
 main()
   .then(() => process.exit(0))
   .catch((error) => {

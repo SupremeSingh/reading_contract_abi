@@ -4,6 +4,7 @@ coverage
 coverage.json
 typechain
 spareCode.js
+scripts/interact.js
 
 #Hardhat files
 cache

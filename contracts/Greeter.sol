@@ -1,22 +1,21 @@
-//SPDX-License-Identifier: Unlicense
+//SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
 import "hardhat/console.sol";
-import "./AccessContract.sol";
 
-contract Greeter is AccessContract {
+contract Greeter {
 
     string public greeting;
 
-    constructor() AccessContract(msg.sender) {
+    constructor() {
     }
-    
-    function setGreetingAsUser(string memory _greeting) public ichiGuard() returns(bool value) {
+
+    function setGreetingAsUser(string memory _greeting) public returns(bool value) {
         greeting = _greeting;
         value = true;
     }
 
-    function setGreetingAsAdmin(string memory _greeting, uint256 _code) public ichiGuard() returns(bool value) {
+    function setGreetingAsAdmin(string memory _greeting, uint256 _code) public returns(bool value) {
         if (_code == 4) {
             greeting = _greeting;
         }

@@ -3,10 +3,11 @@ pragma solidity ^0.8.0;
 
 import "hardhat/console.sol";
 import "./Greeter.sol";
+import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 
-contract GreeterChild is Greeter {
+contract GreeterChild is Greeter, ERC721 {
 
-    constructor() Greeter() {
+    constructor() Greeter() ERC721("MyCollectible", "MCO"){
     }
 
     function setGreetingAsHigherAdmin(string memory _greeting, uint256 _code) public returns(bool value) {

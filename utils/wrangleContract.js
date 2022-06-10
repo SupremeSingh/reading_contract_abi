@@ -3,17 +3,18 @@ const parentContract1 = require("../artifacts/contracts/ICHIIntrospect.sol/ICHII
 const parentContract2 = require("../artifacts/contracts/Greeter.sol/Greeter.json");
 var fs = require("fs");
 
-let parentContractABISet = [parentContract1.abi, parentContract2.abi];
+let parentABISet = [parentContract1, parentContract2];
 let parentContractFunctions = [];
 
 let registerBlock = "";
 let mutabilityToIgnore = ["pure", "view", "private"];
 
-function functionNameExists(parentContractABISet, functionName) {
-  for (let i = 0; i < parentContractABISet.length; i++) {
-    for (let j = 0; j < parentContractABISet[i].length; j++) {
-      if (parentContractABISet[i][j].name === functionName) {
-        parentContractFunctions.push(parentContractABISet[i][j]);
+function functionNameExists(functionName) {
+  for (let i = 0; i < parentABISet.length; i++) {
+    for (let j = 0; j < parentABISet[i]["abi"].length; j++) {
+      if (parentABISet[i]["abi"][j].name === functionName) {
+        parentContractFunctions.push("From " + parentABISet[i]["contractName"] + ".sol ... ");
+        parentContractFunctions.push(parentABISet[i]["abi"][j]);
       }
     }
   }
@@ -29,7 +30,7 @@ async function main() {
       type === "function" &&
       !mutabilityToIgnore.includes(mutability)
     ) {
-      functionNameExists(parentContractABISet, functionName);
+      functionNameExists(functionName);
       let arg = functionName + "(";
       let numParams = contract["abi"][i].inputs.length;
       if (numParams > 0) {
@@ -66,6 +67,7 @@ async function main() {
 
   console.log("The following functions wre registered, but have not been guarded ...");
   console.log(parentContractFunctions);
+  console.log(`Please override these functions in ${contractName} with the ichiGuard() modifier.`);
 
   fs.writeFile(filepath, fileContent, (err) => {
     if (err) throw err;

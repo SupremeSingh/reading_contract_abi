@@ -1,19 +1,21 @@
 // -------------------------------------------------- DEPLOYER MODIFY OVER HERE ---------------------------------------
 const contract = require("../artifacts/contracts/GreeterChild.sol/GreeterChild.json");
-const parentContract1 = require("../artifacts/contracts/ICHIIntrospect.sol/ICHIIntrospect.json");
-const parentContract2 = require("../artifacts/contracts/Greeter.sol/Greeter.json");
+const parentContract1 = require("../artifacts/contracts/Greeter.sol/Greeter.json");
+const parentContract2 = require("../artifacts/@openzeppelin/contracts/token/ERC721/ERC721.sol/ERC721.json");
 
 let parentABISet = [parentContract1, parentContract2];
-let functionsToIgnore = ["setGreetingAsUser"];
+let functionsToIgnore = ["grantRole", "revokeRole", "renounceRole", "approve", "transferFrom", "safeTransferFrom", "setApprovalForAll"];
 // --------------------------------------------------------------------------------------------------------------------
 
 var fs = require("fs");
 let registerBlock = "";
+let parentContractNames = [];
 let parentContractFunctions = [];
 let mutabilityToIgnore = ["pure", "view", "private"];
 
 function functionNameExists(functionName) {
   for (let i = 0; i < parentABISet.length; i++) {
+    parentContractNames.push(parentABISet[i]["contractName"]);
     for (let j = 0; j < parentABISet[i]["abi"].length; j++) {
       if (parentABISet[i]["abi"][j].name === functionName && !functionsToIgnore.includes(parentABISet[i]["abi"][j].name)) {
         parentContractFunctions.push("From " + parentABISet[i]["contractName"] + ".sol ... ");
@@ -50,6 +52,18 @@ async function main() {
 
   // Writing the new introspective contract to a file
 
+  let uniqueParentContractNames = Array.from(new Set(parentContractNames));
+  let namesForInheritance = "";
+  let namesForConstructor = "";
+  let importStatements = "";
+  for (let i = 0; i < uniqueParentContractNames.length; i++) {
+    importStatements += "import './" + uniqueParentContractNames[i] + ".sol';";
+    namesForInheritance += uniqueParentContractNames[i] + ", ";
+    namesForConstructor += uniqueParentContractNames[i] + "() ";    
+  }
+  
+  console.log(namesForInheritance);
+
   var newName = contractName + "Introspect";
   var filepath =
     "C:/Users/User/Desktop/reading_contract_abi/contracts/" + newName + ".sol";
@@ -58,13 +72,20 @@ async function main() {
     //SPDX-License-Identifier: Unlicense
     pragma solidity ^0.8.0;
     
-    import "hardhat/console.sol";
-    import "./ICHIIntrospect.sol";
+    import 'hardhat/console.sol';
+    import './ICHIIntrospect.sol';
+    ${importStatements}
     
-    contract ${newName} is ICHIIntrospect {
+    contract ${newName} is ${namesForInheritance}ICHIIntrospect {
     
-        constructor() ICHIIntrospect(msg.sender) {
+        constructor() ${namesForConstructor}ICHIIntrospect(msg.sender) {
             ${registerBlock}
+        }
+        
+        // Please add all contract names with this function in override() function, 
+        // eg. override(AccessControl, ...);
+        function supportsInterface(bytes4 interfaceId) public view virtual override() returns (bool) {
+          return super.supportsInterface(interfaceId);
         }
     }
     `;
